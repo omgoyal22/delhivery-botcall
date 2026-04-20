@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AU Bank — AI Hiring Assistant</title>
+  <meta name="description" content="AU Bank AI-powered hiring assistant. Start a voice interview directly in your browser." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- Animated background blobs -->
+    <div class="bg-blobs" aria-hidden="true">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Main content -->
+    <main class="main-container">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="40" height="40" rx="10" fill="url(#logoGrad)"/>
+              <path d="M12 28L20 12L28 28H24L20 20L16 28H12Z" fill="white" stroke="white" stroke-width="0.5"/>
+              <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#F59E0B"/><stop offset="1" stop-color="#D97706"/></linearGradient></defs>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <h1>AU Bank</h1>
+            <p>AI Hiring Assistant</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Call Card -->
+      <section class="call-card" id="call-card">
+        <div class="call-card-inner">
+
+          <!-- Status badge -->
+          <div class="status-badge" id="status-badge">
+            <span class="status-dot"></span>
+            <span class="status-text">Ready</span>
+          </div>
+
+          <!-- Avatar / Visualizer area -->
+          <div class="avatar-area" id="avatar-area">
+            <div class="avatar-ring" id="avatar-ring">
+              <div class="avatar-circle">
+                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="avatar-icon">
+                  <circle cx="32" cy="22" r="10" fill="rgba(255,255,255,0.9)"/>
+                  <path d="M12 52C12 42 20 34 32 34C44 34 52 42 52 52" stroke="rgba(255,255,255,0.9)" stroke-width="3" fill="none" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+            <!-- Pulse rings for active state -->
+            <div class="pulse-ring pulse-ring-1" id="pulse-1"></div>
+            <div class="pulse-ring pulse-ring-2" id="pulse-2"></div>
+            <div class="pulse-ring pulse-ring-3" id="pulse-3"></div>
+          </div>
+
+          <!-- Call info -->
+          <div class="call-info">
+            <h2 class="call-title" id="call-title">AI Hiring Assistant</h2>
+            <p class="call-subtitle" id="call-subtitle">Click the button below to start your voice interview</p>
+          </div>
+
+          <!-- Timer -->
+          <div class="call-timer" id="call-timer">
+            <span class="timer-icon">⏱</span>
+            <span class="timer-text" id="timer-text">00:00</span>
+          </div>
+
+          <!-- Volume indicator -->
+          <div class="volume-bar-container" id="volume-container">
+            <div class="volume-bars">
+              <div class="vol-bar" id="vol-1"></div>
+              <div class="vol-bar" id="vol-2"></div>
+              <div class="vol-bar" id="vol-3"></div>
+              <div class="vol-bar" id="vol-4"></div>
+              <div class="vol-bar" id="vol-5"></div>
+              <div class="vol-bar" id="vol-6"></div>
+              <div class="vol-bar" id="vol-7"></div>
+              <div class="vol-bar" id="vol-8"></div>
+              <div class="vol-bar" id="vol-9"></div>
+            </div>
+            <span class="volume-label" id="volume-label">Listening...</span>
+          </div>
+
+          <!-- Call button -->
+          <button class="call-btn" id="call-btn" type="button">
+            <span class="call-btn-icon" id="call-btn-icon">
+              <!-- Phone icon -->
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="phone-icon">
+                <path d="M22 16.92V19.92C22 20.48 21.56 20.93 21 20.97C20.68 21 20.35 21 20 21C10.61 21 3 13.39 3 4C3 3.65 3 3.32 3.03 3C3.07 2.44 3.52 2 4.08 2H7.08C7.56 2 7.97 2.34 8.05 2.81C8.14 3.38 8.3 3.93 8.52 4.46L7.02 5.97C6.57 5.13 6.22 4.23 6 3.28V3.28C5.98 3.19 6.06 3.11 6.15 3.13L7.08 3L8.05 2.81C8.14 3.38 8.3 3.93 8.52 4.46C9.27 6.11 10.37 7.6 11.78 8.78C13 9.81 14.43 10.56 16 10.97L17.54 8.52C18.07 8.74 18.62 8.9 19.19 8.99C19.66 9.07 20 9.48 20 9.96V12.92" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="call-btn-text" id="call-btn-text">Start Call</span>
+          </button>
+
+          <!-- Transcript area -->
+          <div class="transcript-area" id="transcript-area">
+            <h3 class="transcript-title">Live Transcript</h3>
+            <div class="transcript-messages" id="transcript-messages">
+              <p class="transcript-placeholder">Conversation will appear here...</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <!-- <p>Powered by <strong>Vapi AI</strong> · Secure browser-based voice calls</p> -->
+      </footer>
+
+    </main>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
