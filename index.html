@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AU Bank — AI Hiring Assistant</title>
-  <meta name="description" content="AU Bank AI-powered hiring assistant. Start a voice interview directly in your browser." />
+  <title>Emaar Group — Sales & Scheduling Agent</title>
+  <meta name="description" content="Emaar Group AI-powered sales assistant. Start a voice consultation directly in your browser." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -34,10 +34,15 @@
             </svg>
           </div>
           <div class="logo-text">
-            <h1>AU Bank</h1>
-            <p>AI Hiring Assistant</p>
+            <h1>Emaar Group</h1>
+            <p>Sales & Scheduling Agent</p>
           </div>
         </div>
+        <button class="icon-btn" id="sidebar-toggle" title="View Transcripts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </button>
       </header>
 
       <!-- Call Card -->
@@ -68,8 +73,8 @@
 
           <!-- Call info -->
           <div class="call-info">
-            <h2 class="call-title" id="call-title">AI Hiring Assistant</h2>
-            <p class="call-subtitle" id="call-subtitle">Click the button below to start your voice interview</p>
+            <h2 class="call-title" id="call-title">Sales & Scheduling Agent</h2>
+            <p class="call-subtitle" id="call-subtitle">Click the button below to start your voice consultation</p>
           </div>
 
           <!-- Timer -->
@@ -122,6 +127,63 @@
       </footer>
 
     </main>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>Call History</h2>
+        <button class="icon-btn close-btn" id="sidebar-close" title="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="sidebar-content">
+        <div id="call-list-container">
+          <p class="loading-text">Loading calls...</p>
+        </div>
+        <div id="transcript-detail-container" style="display: none;">
+          <div class="detail-header-actions">
+            <button class="back-btn" id="back-to-list">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              Back to List
+            </button>
+            <button class="btn-secondary" id="open-fullscreen-analysis-btn">Full Analysis</button>
+          </div>
+          <div id="transcript-detail-content" class="transcript-messages"></div>
+        </div>
+      </div>
+    </aside>
+    <!-- Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  </div>
+
+  <!-- Full Screen Analysis Overlay -->
+  <div id="fullscreen-overlay" class="fullscreen-overlay">
+    <div class="fullscreen-header">
+      <h2>Call Analysis & Transcript</h2>
+      <button class="icon-btn" id="close-fullscreen-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="fullscreen-body">
+      <div class="fullscreen-left">
+        <h3>Full Transcript</h3>
+        <div id="fs-transcript-content" class="fs-content-box transcript-messages"></div>
+      </div>
+      <div class="fullscreen-right">
+        <h3>AI Analysis</h3>
+        <div id="fs-analysis-content" class="fs-content-box"></div>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="/main.js"></script>

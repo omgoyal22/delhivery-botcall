@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   AU Bank — AI Hiring Assistant  |  Vapi Web SDK Integration
+   Emaar Group — Sales & Scheduling Agent  |  Vapi Web SDK Integration
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 import Vapi from "@vapi-ai/web";
@@ -7,6 +7,8 @@ import Vapi from "@vapi-ai/web";
 // ── Configuration ──────────────────────────────────────────────────────────────
 const VAPI_PUBLIC_KEY = import.meta.env.VITE_VAPI_PUBLIC_KEY;
 const ASSISTANT_ID = import.meta.env.VITE_ASSISTANT_ID;
+
+const VAPI_PRIVATE_KEY = import.meta.env.VITE_VAPI_PRIVATE_KEY;
 
 if (!VAPI_PUBLIC_KEY || !ASSISTANT_ID) {
   throw new Error(
@@ -47,6 +49,24 @@ const pulseRings = [
 const volBars = Array.from({ length: 9 }, (_, i) =>
   document.getElementById(`vol-${i + 1}`)
 );
+
+// Sidebar Elements
+const sidebarToggleBtn = document.getElementById("sidebar-toggle");
+const sidebar = document.getElementById("sidebar");
+const sidebarCloseBtn = document.getElementById("sidebar-close");
+const sidebarOverlay = document.getElementById("sidebar-overlay");
+const callListContainer = document.getElementById("call-list-container");
+const transcriptDetailContainer = document.getElementById("transcript-detail-container");
+const transcriptDetailContent = document.getElementById("transcript-detail-content");
+const backToListBtn = document.getElementById("back-to-list");
+const openFullscreenAnalysisBtn = document.getElementById("open-fullscreen-analysis-btn");
+
+const fullscreenOverlay = document.getElementById("fullscreen-overlay");
+const closeFullscreenBtn = document.getElementById("close-fullscreen-btn");
+const fsTranscriptContent = document.getElementById("fs-transcript-content");
+const fsAnalysisContent = document.getElementById("fs-analysis-content");
+
+let currentDetailedCall = null;
 
 // ── Read query params (for shareable links) ────────────────────────────────────
 function getQueryParam(name) {
@@ -105,7 +125,7 @@ function setState(newState) {
       callBtnIcon.innerHTML = phoneIconSVG;
       callBtnText.textContent = "Start Call";
       callSubtitle.textContent =
-        "Click the button below to start your voice interview";
+        "Click the button below to start your voice consultation";
       break;
 
     case "connecting":
@@ -123,7 +143,7 @@ function setState(newState) {
     case "ended":
       callBtnIcon.innerHTML = phoneIconSVG;
       callBtnText.textContent = "Start New Call";
-      callSubtitle.textContent = "Call ended. Click to start a new interview.";
+      callSubtitle.textContent = "Call ended. Click to start a new consultation.";
       stopTimer();
       break;
   }
@@ -303,4 +323,263 @@ if (userParam) {
   callTitle.textContent = `Welcome, ${userParam}`;
 }
 
-console.log("🏦 AU Bank AI Hiring Assistant — Frontend Ready");
+// ── Sidebar Logic ───────────────────────────────────────────────────────────────
+
+function toggleSidebar(open) {
+  if (open) {
+    sidebar.classList.add("open");
+    sidebarOverlay.classList.add("active");
+    fetchCalls();
+  } else {
+    sidebar.classList.remove("open");
+    sidebarOverlay.classList.remove("active");
+    // Reset view
+    callListContainer.style.display = "block";
+    transcriptDetailContainer.style.display = "none";
+  }
+}
+
+sidebarToggleBtn.addEventListener("click", () => toggleSidebar(true));
+sidebarCloseBtn.addEventListener("click", () => toggleSidebar(false));
+sidebarOverlay.addEventListener("click", () => toggleSidebar(false));
+
+backToListBtn.addEventListener("click", () => {
+  callListContainer.style.display = "block";
+  transcriptDetailContainer.style.display = "none";
+  currentDetailedCall = null;
+});
+
+openFullscreenAnalysisBtn.addEventListener("click", () => {
+  if (currentDetailedCall) {
+    // Populate the full screen transcript
+    fsTranscriptContent.innerHTML = transcriptDetailContent.innerHTML;
+    // Show overlay
+    fullscreenOverlay.classList.add("active");
+    // Fetch and populate analysis
+    generatePythonAnalysis(currentDetailedCall);
+  }
+});
+
+closeFullscreenBtn.addEventListener("click", () => {
+  fullscreenOverlay.classList.remove("active");
+});
+
+async function fetchCalls() {
+  if (!VAPI_PRIVATE_KEY) {
+    callListContainer.innerHTML = `<p class="error-text">Missing VITE_VAPI_PRIVATE_KEY in .env file. Cannot fetch historical calls.</p>`;
+    return;
+  }
+
+  callListContainer.innerHTML = `<p class="loading-text">Fetching historical calls...</p>`;
+  
+  try {
+    const res = await fetch(`https://api.vapi.ai/call?assistantId=${ASSISTANT_ID}&limit=20`, {
+      headers: {
+        "Authorization": `Bearer ${VAPI_PRIVATE_KEY}`
+      }
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch calls");
+    
+    const calls = await res.json();
+    renderCallList(calls);
+  } catch (error) {
+    callListContainer.innerHTML = `<p class="error-text">Error fetching calls: ${error.message}</p>`;
+  }
+}
+
+function renderCallList(calls) {
+  if (!calls || calls.length === 0) {
+    callListContainer.innerHTML = `<p class="loading-text">No previous calls found for this assistant.</p>`;
+    return;
+  }
+
+  callListContainer.innerHTML = "";
+  calls.forEach(call => {
+    // Show all ended calls (even if list API truncated the transcript)
+    if (call.status !== "ended") return;
+
+    const div = document.createElement("div");
+    div.className = "call-list-item";
+    
+    const date = new Date(call.createdAt).toLocaleString();
+    const durationStr = call.endedAt ? Math.round((new Date(call.endedAt) - new Date(call.createdAt))/1000) + "s" : "Unknown";
+
+    div.innerHTML = `
+      <h4>Call on ${date}</h4>
+      <p>Status: ${call.status}</p>
+      <div class="duration">Duration: ${durationStr}</div>
+    `;
+
+    div.addEventListener("click", () => showTranscriptDetail(call));
+    callListContainer.appendChild(div);
+  });
+
+  if (callListContainer.children.length === 0) {
+    callListContainer.innerHTML = `<p class="loading-text">No completed calls found yet.</p>`;
+  }
+}
+
+async function showTranscriptDetail(listCall) {
+  callListContainer.style.display = "none";
+  transcriptDetailContainer.style.display = "flex";
+  transcriptDetailContent.innerHTML = `<p class="loading-text">Loading full transcript...</p>`;
+  
+  try {
+    // Fetch the individual call to ensure we get the complete transcript (list endpoint often truncates)
+    const res = await fetch(`https://api.vapi.ai/call/${listCall.id}`, {
+      headers: { "Authorization": `Bearer ${VAPI_PRIVATE_KEY}` }
+    });
+    if (!res.ok) throw new Error("Failed to fetch full call details");
+    
+    const call = await res.json();
+    let html = "";
+
+    // Prefer structured messages array if Vapi provides it
+    if (call.messages && call.messages.length > 0) {
+      const transcriptMessages = call.messages.filter(m => 
+        (m.role === "user" || m.role === "assistant" || m.role === "bot") && 
+        (m.message || m.content || m.transcript)
+      );
+      
+      if (transcriptMessages.length > 0) {
+        transcriptMessages.forEach(m => {
+          const role = (m.role === "assistant" || m.role === "bot") ? "bot" : "user";
+          const text = m.message || m.content || m.transcript;
+          html += `
+            <div class="transcript-msg ${role}">
+              <div class="msg-role">${role === "bot" ? "🤖 Assistant" : "🎤 User"}</div>
+              <div class="msg-text">${escapeHtml(text)}</div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    // Fallback to parsing the transcript string if structured messages aren't available
+    if (!html && call.transcript) {
+      const lines = call.transcript.split('\n');
+      lines.forEach(line => {
+        if (!line.trim()) return;
+        
+        let role = "user";
+        let text = line;
+        
+        if (line.toLowerCase().startsWith("ai:") || line.toLowerCase().startsWith("bot:") || line.toLowerCase().startsWith("assistant:")) {
+          role = "bot";
+          text = line.substring(line.indexOf(':') + 1).trim();
+        } else if (line.toLowerCase().startsWith("user:") || line.toLowerCase().startsWith("human:")) {
+          role = "user";
+          text = line.substring(line.indexOf(':') + 1).trim();
+        }
+        
+        html += `
+          <div class="transcript-msg ${role}">
+            <div class="msg-role">${role === "bot" ? "🤖 Assistant" : "🎤 User"}</div>
+            <div class="msg-text">${escapeHtml(text)}</div>
+          </div>
+        `;
+      });
+    }
+
+    if (!html) {
+      html = `<p class="loading-text">No transcript available for this call.</p>`;
+    }
+
+    transcriptDetailContent.innerHTML = html;
+    currentDetailedCall = call;
+  } catch (error) {
+    transcriptDetailContent.innerHTML = `<p class="error-text">Error loading transcript: ${error.message}</p>`;
+  }
+}
+
+async function generatePythonAnalysis(call) {
+  if (!call || !call.transcript) {
+    fsAnalysisContent.innerHTML = `
+      <div class="analysis-card">
+        <h4>🚨 Call Status</h4>
+        <p><strong>Call drops and no information gathered.</strong></p>
+      </div>
+    `;
+    return;
+  }
+
+  fsAnalysisContent.innerHTML = `<p class="loading-text">Generating AI Analysis...</p>`;
+
+  try {
+    const res = await fetch("http://localhost:4444/analyze_transcript", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transcript: call.transcript })
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch analysis from Python backend.");
+
+    const analysis = await res.json();
+    
+    let html = "";
+    
+    // Status Card with Lead Type
+    const isDropped = analysis.status.toLowerCase().includes("drop");
+    
+    let leadBadge = "";
+    if (analysis.lead_type) {
+      if (analysis.lead_type.includes("Hot")) {
+        leadBadge = `<span style="background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin-left: 8px;">🔥 Hot Lead</span>`;
+      } else if (analysis.lead_type.includes("Warm")) {
+        leadBadge = `<span style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin-left: 8px;">☀️ Warm Lead</span>`;
+      } else if (analysis.lead_type.includes("Cold")) {
+        leadBadge = `<span style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin-left: 8px;">❄️ Cold Lead</span>`;
+      }
+    }
+
+    html += `
+      <div class="analysis-card">
+        <h4>${isDropped ? '🚨' : '✅'} Call Status ${leadBadge}</h4>
+        <p><strong>${escapeHtml(analysis.status)}</strong></p>
+      </div>
+    `;
+
+    // Property Interest
+    html += `
+      <div class="analysis-card">
+        <h4>🏢 Property Interest</h4>
+        <p><strong>Location:</strong> ${escapeHtml(analysis.location)}</p>
+        <p><strong>Property Type:</strong> ${escapeHtml(analysis.property_type)}</p>
+        <p><strong>Budget:</strong> ${escapeHtml(analysis.budget)}</p>
+      </div>
+    `;
+
+    // Booking Details
+    if (analysis.customer_name !== "Not provided" || analysis.phone_number !== "Not provided") {
+      html += `
+        <div class="analysis-card">
+          <h4>📅 Booking Details</h4>
+          <p><strong>Name:</strong> ${escapeHtml(analysis.customer_name)}</p>
+          <p><strong>Phone:</strong> ${escapeHtml(analysis.phone_number)}</p>
+        </div>
+      `;
+    }
+
+    // AI Summary
+    if (analysis.summary) {
+      html += `
+        <div class="analysis-card">
+          <h4>📝 AI Summary</h4>
+          <p style="white-space: pre-wrap; line-height: 1.5;">${escapeHtml(analysis.summary)}</p>
+        </div>
+      `;
+    }
+
+    fsAnalysisContent.innerHTML = html;
+  } catch (err) {
+    fsAnalysisContent.innerHTML = `
+      <div class="analysis-card">
+        <h4>❌ Error</h4>
+        <p style="color: var(--danger);">${err.message}</p>
+      </div>
+    `;
+  }
+}
+
+console.log("🏢 Emaar Group Sales & Scheduling Agent — Frontend Ready");
