@@ -583,3 +583,41 @@ async function generatePythonAnalysis(call) {
 }
 
 console.log("🏢 Emaar Group Sales & Scheduling Agent — Frontend Ready");
+
+const syncDownloadBtn = document.getElementById("sync-download-btn");
+if (syncDownloadBtn) {
+  syncDownloadBtn.addEventListener("click", async () => {
+    const originalHTML = syncDownloadBtn.innerHTML;
+    syncDownloadBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; animation: __spin 1s linear infinite;">
+        <style>@keyframes __spin { 100% { transform: rotate(360deg); } }</style>
+        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+        <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
+      </svg>
+      Syncing & Analyzing...
+    `;
+    syncDownloadBtn.disabled = true;
+
+    try {
+      const res = await fetch("http://localhost:4444/sync_and_download_leads");
+      if (!res.ok) {
+        throw new Error("Failed to sync leads from server.");
+      }
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "leads.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert("Error syncing leads: " + err.message);
+    } finally {
+      syncDownloadBtn.innerHTML = originalHTML;
+      syncDownloadBtn.disabled = false;
+    }
+  });
+}
