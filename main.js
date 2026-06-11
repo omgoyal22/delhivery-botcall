@@ -37,6 +37,8 @@ const volumeLabel = document.getElementById("volume-label");
 const callBtn = document.getElementById("call-btn");
 const callBtnIcon = document.getElementById("call-btn-icon");
 const callBtnText = document.getElementById("call-btn-text");
+const transcriptArea = document.getElementById("transcript-area");
+const transcriptMessages = document.getElementById("transcript-messages");
 const pulseRings = [
   document.getElementById("pulse-1"),
   document.getElementById("pulse-2"),
@@ -85,6 +87,14 @@ function setState(newState) {
     "visible",
     newState === "active"
   );
+
+  // Transcript
+  if (transcriptArea) {
+    transcriptArea.classList.toggle(
+      "visible",
+      newState === "active" || newState === "ended"
+    );
+  }
 
   // Button appearance
   callBtn.className = "call-btn";
@@ -170,11 +180,40 @@ function resetVolumeBars() {
   });
 }
 
+// ── Transcript ──────────────────────────────────────────────────────────────────
+function addTranscript(role, text) {
+  if (!transcriptMessages) return;
+  // Remove placeholder if present
+  const placeholder = transcriptMessages.querySelector(".transcript-placeholder");
+  if (placeholder) placeholder.remove();
+
+  const msg = document.createElement("div");
+  msg.className = `transcript-msg ${role}`;
+  msg.innerHTML = `
+    <div class="msg-role">${role === "bot" ? "🤖 Assistant" : "🎤 You"}</div>
+    <div class="msg-text">${escapeHtml(text)}</div>
+  `;
+  transcriptMessages.appendChild(msg);
+  transcriptMessages.scrollTop = transcriptMessages.scrollHeight;
+}
+
+function clearTranscript() {
+  if (!transcriptMessages) return;
+  transcriptMessages.innerHTML = `<p class="transcript-placeholder">Conversation will appear here...</p>`;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 // ── Call Control ────────────────────────────────────────────────────────────────
 async function startCall() {
   if (callState === "connecting" || callState === "active") return;
 
   setState("connecting");
+  clearTranscript();
 
   try {
     const userName = getQueryParam("user");
@@ -235,6 +274,12 @@ vapi.on("speech-end", () => {
 
 vapi.on("volume-level", (level) => {
   updateVolumeBars(level);
+});
+
+vapi.on("message", (msg) => {
+  if (msg.type === "transcript" && msg.transcriptType === "final") {
+    addTranscript(msg.role === "assistant" ? "bot" : "user", msg.transcript);
+  }
 });
 
 vapi.on("error", (error) => {
