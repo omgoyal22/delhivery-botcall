@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   AU Bank — Support Agent  |  Vapi Web SDK Integration
+   Delhivery — Driver Support Agent  |  Vapi Web SDK Integration
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 import Vapi from "@vapi-ai/web";
@@ -299,4 +299,4 @@ if (userParam) {
   callTitle.textContent = `Welcome, ${userParam}`;
 }
 
-console.log("AU Bank Assistant — Frontend Ready");
+console.log("Delhivery Driver Agent — Frontend Ready");

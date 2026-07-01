@@ -1,31 +1,31 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   Emaar Group — Sales & Scheduling Agent  |  Premium Dark Theme
+   Delhivery — Driver Support Agent  |  Monochrome Premium Theme
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 /* ── CSS Custom Properties ──────────────────────────────────────────────────── */
 :root {
   /* Colors */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-card: rgba(18, 18, 30, 0.65);
-  --bg-card-border: rgba(255, 255, 255, 0.06);
+  --bg-primary: #050505;
+  --bg-secondary: #0c0c0c;
+  --bg-card: rgba(12, 12, 12, 0.8);
+  --bg-card-border: rgba(255, 255, 255, 0.1);
 
-  --accent-gold: #f59e0b;
-  --accent-amber: #d97706;
-  --accent-orange: #ea580c;
+  --accent-gold: #ffffff;
+  --accent-amber: #e5e5e5;
+  --accent-orange: #a3a3a3;
 
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-primary: #ffffff;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
 
   --success: #22c55e;
   --danger: #ef4444;
-  --info: #3b82f6;
+  --info: #ffffff;
 
   /* Gradients */
-  --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #ea580c 100%);
+  --gradient-gold: linear-gradient(135deg, #ffffff 0%, #e5e5e5 50%, #cccccc 100%);
   --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  --gradient-card: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(18, 18, 30, 0.8) 100%);
+  --gradient-card: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(12, 12, 12, 0.95) 100%);
 
   /* Spacing */
   --radius-sm: 8px;
@@ -35,9 +35,9 @@
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-glow: 0 0 60px rgba(245, 158, 11, 0.15);
-  --shadow-glow-active: 0 0 80px rgba(245, 158, 11, 0.3);
-  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-glow: 0 0 60px rgba(255, 255, 255, 0.03);
+  --shadow-glow-active: 0 0 80px rgba(255, 255, 255, 0.07);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
 
   /* Transitions */
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
@@ -88,7 +88,7 @@ body {
 .blob-1 {
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
   top: -10%;
   left: -5%;
   animation-delay: 0s;
@@ -97,7 +97,7 @@ body {
 .blob-2 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(234, 88, 12, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
   bottom: -5%;
   right: -5%;
   animation-delay: -7s;
@@ -107,7 +107,7 @@ body {
 .blob-3 {
   width: 350px;
   height: 350px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.01) 0%, transparent 70%);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -194,7 +194,7 @@ body {
 
 .call-card.active {
   box-shadow: var(--shadow-card), var(--shadow-glow-active);
-  border-color: rgba(245, 158, 11, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .call-card-inner {
@@ -259,20 +259,20 @@ body {
   height: 110px;
   border-radius: 50%;
   padding: 3px;
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(234, 88, 12, 0.1));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
   transition: all 0.5s var(--ease-smooth);
 }
 
 .avatar-ring.speaking {
-  background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
-  box-shadow: 0 0 40px rgba(245, 158, 11, 0.4);
+  background: linear-gradient(135deg, #ffffff, #555555);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
 }
 
 .avatar-circle {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: linear-gradient(145deg, #1a1a2e, #16162a);
+  background: linear-gradient(145deg, #101010, #080808);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -291,7 +291,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  border: 1px solid rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   opacity: 0;
   pointer-events: none;
 }
@@ -381,7 +381,7 @@ body {
   width: 4px;
   height: 6px;
   border-radius: 2px;
-  background: rgba(245, 158, 11, 0.25);
+  background: rgba(255, 255, 255, 0.2);
   transition: height 0.1s ease, background 0.1s ease;
 }
 
@@ -413,15 +413,15 @@ body {
   letter-spacing: 0.02em;
   cursor: pointer;
   transition: all var(--transition-base);
-  color: #fff;
+  color: #000;
   background: var(--gradient-gold);
-  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3), 0 0 0 0 rgba(245, 158, 11, 0);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1), 0 0 0 0 rgba(255, 255, 255, 0);
   outline: none;
 }
 
 .call-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(245, 158, 11, 0.4), 0 0 0 0 rgba(245, 158, 11, 0);
+  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.2), 0 0 0 0 rgba(255, 255, 255, 0);
 }
 
 .call-btn:active {
@@ -433,11 +433,13 @@ body {
   box-shadow: none;
   cursor: not-allowed;
   pointer-events: none;
+  color: #fff;
 }
 
 .call-btn.active {
   background: var(--gradient-danger);
   box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+  color: #fff;
 }
 
 .call-btn.active:hover {
@@ -446,6 +448,7 @@ body {
 
 .call-btn.ended {
   background: var(--gradient-gold);
+  color: #000;
 }
 
 .phone-icon {
@@ -537,14 +540,14 @@ body {
 }
 
 .transcript-msg.bot {
-  background: rgba(245, 158, 11, 0.08);
-  border-left: 3px solid var(--accent-gold);
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 3px solid #ffffff;
   color: var(--text-primary);
 }
 
 .transcript-msg.user {
-  background: rgba(59, 130, 246, 0.08);
-  border-left: 3px solid var(--info);
+  background: rgba(255, 255, 255, 0.08);
+  border-left: 3px solid #888888;
   color: var(--text-primary);
 }
 
@@ -556,8 +559,8 @@ body {
   margin-bottom: 0.15rem;
 }
 
-.transcript-msg.bot .msg-role { color: var(--accent-gold); }
-.transcript-msg.user .msg-role { color: var(--info); }
+.transcript-msg.bot .msg-role { color: #ffffff; }
+.transcript-msg.user .msg-role { color: #888888; }
 
 /* ── Footer ──────────────────────────────────────────────────────────────────── */
 .footer {
@@ -717,7 +720,7 @@ body {
 }
 
 .call-list-item:hover {
-  border-color: rgba(245, 158, 11, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
 }
 
@@ -784,9 +787,9 @@ body {
 }
 
 .btn-secondary {
-  background: rgba(245, 158, 11, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--accent-gold);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 0.3rem 0.8rem;
   border-radius: var(--radius-sm);
   font-size: 0.75rem;
@@ -796,7 +799,7 @@ body {
 }
 
 .btn-secondary:hover {
-  background: rgba(245, 158, 11, 0.2);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .analysis-container {
